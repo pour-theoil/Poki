@@ -65,10 +65,16 @@ order by COUNT(a.id) asc;
 
 
 --14)
-select title from Poem
+select title
+from poem
+where WordCount = (select max(wordcount) from Poem)
+
+select title
+from poem
+where LEN(Poem.Title)-LEN(REPLACE(poem.Title, ' ', '')) = (select max(LEN(Poem.Title)-LEN(REPLACE(poem.Title, ' ', ''))) from Poem)
 
 --15)
-select top 10 a.Id, count(a.id) as 'Number of poems'
+select top 10 a.id, count(a.id) as 'Number of poems'
 from poem p left join Author a on p.AuthorId = a.Id
 group by a.Id
 order by count(a.id) desc;
@@ -89,3 +95,23 @@ select top 1 COUNT(p.poemId), e.Name
 from PoemEmotion p left join Emotion e on p.EmotionId = e.Id
 group by e.Name
 order by COUNT(p.poemId) asc;
+
+--19)
+select count(g.Id), g.Name
+from poem p left join Author a on p.AuthorId = a.Id
+left join Grade g on a.GradeId = g.Id
+left join PoemEmotion pm on pm.PoemId = p.Id
+left join Emotion e on pm.EmotionId = e.Id
+where e.Id = 4
+group by g.name
+order by count(g.Id) asc
+
+
+--20)
+select count(g.Id), g.Name
+from poem p left join Author a on p.AuthorId = a.Id
+left join Gender g on a.GradeId = g.Id
+left join PoemEmotion pm on pm.PoemId = p.Id
+left join Emotion e on pm.EmotionId = e.Id
+where e.Id = 2
+group by g.Name
